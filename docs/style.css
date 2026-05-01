@@ -511,6 +511,10 @@ section .subhead {
   display: block;
   height: auto;
   object-fit: cover;
+  image-rendering: auto;             /* explicit bilinear for downscaled thumbs */
+  transform: translateZ(0);          /* nudge GPU compositor — smooths Chrome/Safari downscaling */
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
 }
 .shot .label {
   padding: 12px 6px 14px;
