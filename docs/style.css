@@ -412,8 +412,9 @@ section .subhead {
   cursor: pointer;
   color: #e6edf3;
   background:
-    radial-gradient(circle at 50% 45%, rgba(0,212,255,0.18) 0%, transparent 55%),
-    linear-gradient(180deg, #0c1219 0%, #050709 100%);
+    /* dark scrim so the play button + label stay readable on top of the frame */
+    linear-gradient(180deg, rgba(5,7,9,0.45) 0%, rgba(5,7,9,0.65) 100%),
+    url("screenshots/demo_poster.jpg") center / cover no-repeat;
   transition: filter 0.2s;
 }
 .video-facade:hover { filter: brightness(1.15); }
