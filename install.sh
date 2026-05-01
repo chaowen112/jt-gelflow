@@ -134,6 +134,20 @@ check_python_version() {
   info "python $v"
 }
 
+# Ubuntu/Debian ship python3 without the pip module — `python3-pip` is a
+# separate package. ensure_command 'python' only fires when python3 itself is
+# missing, so on a vanilla Ubuntu install we skip pip entirely. Check for the
+# pip module directly and install the per-distro package if absent.
+ensure_python_pip() {
+  if python3 -m pip --version >/dev/null 2>&1; then return; fi
+  info "installing pip (python3 -m pip not available)"
+  case "$PKG_MGR" in
+    apt)              pkg_install python3-pip ;;
+    dnf|yum|zypper)   pkg_install python3-pip ;;
+    pacman)           pkg_install python-pip ;;
+  esac
+}
+
 check_node_version() {
   if ! command -v node >/dev/null 2>&1; then
     warn "node not installed; npm build will be skipped (committed dist/ will be used)"
@@ -156,6 +170,7 @@ install_deps() {
   ensure_command git git
   ensure_command python python3
   check_python_version
+  ensure_python_pip
   ensure_command node node || true  # node is optional (we ship pre-built dist/)
 }
 
