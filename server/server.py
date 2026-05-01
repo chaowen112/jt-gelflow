@@ -439,6 +439,19 @@ async def start_server():
     except asyncio.CancelledError:
         pass
 
+    # Close any live WebSocket connections explicitly. Without this,
+    # runner.cleanup() blocks waiting for websocket_handler coroutines that
+    # are parked on `async for msg in ws` — they only return once the client
+    # disconnects or we close from our side. With a browser tab kept open,
+    # systemd's TimeoutStopSec then has to SIGKILL us, making `jt-gelflow
+    # update` feel slow on every restart.
+    for ws in list(ws_clients):
+        try:
+            await ws.close(code=1001, message=b'server shutting down')
+        except Exception:
+            pass
+    ws_clients.clear()
+
     await gelf_collector.stop()
     await runner.cleanup()
 
