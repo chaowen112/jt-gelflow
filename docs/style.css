@@ -393,6 +393,7 @@ section .subhead {
 .video-wrap video {
   display: block;
   width: 100%;
+  aspect-ratio: 16 / 9;            /* lock the box before metadata loads — no layout shift on click-to-play */
   height: auto;
   background: #000;
 }
