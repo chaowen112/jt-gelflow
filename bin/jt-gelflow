@@ -52,11 +52,27 @@ cmd_update() {
     python3 -m pip install --quiet -r "$INSTALL_DIR/requirements.txt"
   fi
 
-  if command -v npm >/dev/null 2>&1; then
+  # Vite 5 needs Node 18+. Distros like Ubuntu 22.04's apt npm ship Node 12
+  # which crashes on top-level await in vite.js. Match install.sh's behaviour:
+  # rebuild only when Node is recent enough, otherwise rely on the committed
+  # dist/ (which the git pull above already refreshed).
+  local can_build=0
+  if command -v node >/dev/null 2>&1 && command -v npm >/dev/null 2>&1; then
+    local nv major
+    nv="$(node --version 2>/dev/null | sed 's/^v//')"
+    major="${nv%%.*}"
+    if [ "${major:-0}" -ge 18 ]; then
+      can_build=1
+    else
+      info "node $nv too old for vite (needs 18+); using committed dist/"
+    fi
+  else
+    info "npm/node not available; using committed dist/"
+  fi
+
+  if [ "$can_build" = "1" ]; then
     info "npm install + build"
     (cd "$INSTALL_DIR" && npm install --no-audit --no-fund --silent && npm run build --silent)
-  else
-    info "npm not installed; skipping rebuild (the committed dist/ will be used)"
   fi
 
   info "restarting service"
