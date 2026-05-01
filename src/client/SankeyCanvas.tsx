@@ -17,9 +17,11 @@ interface Props {
   activeColumns: SankeyColumn[];   // User-toggled active columns
   columnHeaders?: SankeyColumns;   // User-configured header labels
   windowSeconds?: number;
-  // GELF field names for PTR lookup.
+  // GELF field names for PTR + country lookup.
   srcPtrField?: string;
   dstPtrField?: string;
+  srcCountryField?: string;
+  dstCountryField?: string;
   paused?: boolean;
   onActiveColumnsChange?: (cols: SankeyColumn[]) => void;
   onTopNInternalChange?: (n: number) => void;
@@ -150,6 +152,8 @@ function aggregate(
   unknownCountryLabel: string,
   srcPtrField: string,
   dstPtrField: string,
+  srcCountryField: string,
+  dstCountryField: string,
 ): AggregatedFlow[] {
   const out: AggregatedFlow[] = [];
 
@@ -171,8 +175,8 @@ function aggregate(
     const intPtr = (srcInternal ? srcPtr : dstPtr) || intIp;
 
     const countryRaw = srcInternal
-      ? (fields['destination_ip_country_code'] ?? '')
-      : (fields['source_ip_country_code'] ?? '');
+      ? (fields[dstCountryField] ?? '')
+      : (fields[srcCountryField] ?? '');
     const country = String(countryRaw || '').trim() || '__unknown__';
     const countryName = country === '__unknown__' ? unknownCountryLabel : country;
 
@@ -371,6 +375,8 @@ export function SankeyCanvas({
   windowSeconds = 5,
   srcPtrField = 'source_ip_ptr',
   dstPtrField = 'destination_ip_ptr',
+  srcCountryField = 'source_ip_country_code',
+  dstCountryField = 'destination_ip_country_code',
   paused = false,
   onActiveColumnsChange,
   onTopNInternalChange,
@@ -447,6 +453,8 @@ export function SankeyCanvas({
       t('sankey.unknownCountry'),
       srcPtrField,
       dstPtrField,
+      srcCountryField,
+      dstCountryField,
     );
     if (agg.length === 0) { showEmpty(t('sankey.empty')); return; }
 
@@ -733,7 +741,7 @@ export function SankeyCanvas({
       .on('mouseenter', onNodeEnter)
       .on('mousemove', onNodeMove)
       .on('mouseleave', onNodeLeave);
-  }, [width, height, resolvedColumns.join(','), JSON.stringify(headers), topNInternal, topNExternal, srcPtrField, dstPtrField, t]);
+  }, [width, height, resolvedColumns.join(','), JSON.stringify(headers), topNInternal, topNExternal, srcPtrField, dstPtrField, srcCountryField, dstCountryField, t]);
 
   // Snapshot loop: render immediately on mount/setting-change, then every
   // `windowSeconds` seconds. Clamp to safe bounds.

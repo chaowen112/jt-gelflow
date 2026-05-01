@@ -737,14 +737,40 @@ export function SettingsPanel({ open, onClose, onSave }: Props) {
               </div>
 
               <div className="form-group">
-                <label>{t('settings.countryDisplayLabel')}</label>
-                <input
-                  type="text"
-                  value={mapping.country_display || ''}
-                  onChange={e => handleChange('country_display', e.target.value)}
-                  placeholder="Source Country"
-                />
+                <label>{t('settings.srcCountryField')}</label>
+                <div className="field-mapping-row">
+                  <input
+                    type="text"
+                    value={mapping.src_country_field || ''}
+                    onChange={e => handleChange('src_country_field', e.target.value)}
+                    placeholder="source_ip_country_code"
+                  />
+                  <input
+                    type="text"
+                    value={mapping.country_display || ''}
+                    onChange={e => handleChange('country_display', e.target.value)}
+                    placeholder="Source Country"
+                  />
+                </div>
                 <div className="hint">{t('settings.countryDisplayHint')}</div>
+              </div>
+
+              <div className="form-group">
+                <label>{t('settings.dstCountryField')}</label>
+                <div className="field-mapping-row">
+                  <input
+                    type="text"
+                    value={mapping.dst_country_field || ''}
+                    onChange={e => handleChange('dst_country_field', e.target.value)}
+                    placeholder="destination_ip_country_code"
+                  />
+                  <input
+                    type="text"
+                    disabled
+                    value=""
+                    placeholder={t('settings.dstCountrySharesDisplay')}
+                  />
+                </div>
               </div>
               </div>
               )}

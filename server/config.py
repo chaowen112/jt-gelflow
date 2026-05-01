@@ -26,7 +26,11 @@ class MappingConfig:
     src_ptr_field_display: str = "來源 IP 反解"
     dst_ptr_field: str = "destination_ip_ptr"
     dst_ptr_field_display: str = "目的 IP 反解"
-    country_display: str = "來源國碼"             # country uses hardcoded GELF fields
+    # Country code GELF field names. Sankey reads the external side's country
+    # code, picking src or dst based on which endpoint is internal.
+    src_country_field: str = "source_ip_country_code"
+    dst_country_field: str = "destination_ip_country_code"
+    country_display: str = "來源國碼"
 
 
 @dataclass

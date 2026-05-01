@@ -806,6 +806,8 @@ function AppContent() {
                   windowSeconds={config?.sankey_window_seconds ?? 5}
                   srcPtrField={config?.mapping?.src_ptr_field || 'source_ip_ptr'}
                   dstPtrField={config?.mapping?.dst_ptr_field || 'destination_ip_ptr'}
+                  srcCountryField={config?.mapping?.src_country_field || 'source_ip_country_code'}
+                  dstCountryField={config?.mapping?.dst_country_field || 'destination_ip_country_code'}
                   paused={paused || !connected}
                   onActiveColumnsChange={async (cols) => {
                     setConfig(prev => prev ? { ...prev, sankey_active_columns: cols } : prev);

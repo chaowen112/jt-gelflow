@@ -60,7 +60,9 @@ export interface MappingConfig {
   src_ptr_field_display?: string;
   dst_ptr_field?: string;
   dst_ptr_field_display?: string;
-  country_display?: string;         // Sankey country column header (no GELF field)
+  src_country_field?: string;       // GELF field for source country code
+  dst_country_field?: string;       // GELF field for destination country code
+  country_display?: string;         // Sankey country column header
 }
 
 export interface CustomZone {

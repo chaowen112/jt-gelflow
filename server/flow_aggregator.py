@@ -207,9 +207,12 @@ class FlowAggregator:
                 val = message[fname]
                 if isinstance(val, (str, int, float)):
                     filter_fields[fname] = val
-        # Also pull in PTR fields under whatever names the user configured
-        # (defaults already covered above; this picks up custom names too).
-        for fname in (mapping.src_ptr_field, mapping.dst_ptr_field):
+        # Also pull in PTR + country fields under whatever names the user
+        # configured (defaults covered above; this picks up custom names too).
+        for fname in (
+            mapping.src_ptr_field, mapping.dst_ptr_field,
+            mapping.src_country_field, mapping.dst_country_field,
+        ):
             if fname and fname in message and fname not in filter_fields:
                 val = message[fname]
                 if isinstance(val, (str, int, float)):
