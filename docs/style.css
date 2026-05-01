@@ -397,6 +397,48 @@ section .subhead {
   background: #000;
 }
 
+/* Click-to-load facade — keeps the demo video off the wire on first paint.
+   Aspect ratio matches the recording (16:9-ish); no fake screenshot poster
+   so there's no frame mismatch when the real video starts. */
+.video-facade {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  gap: 14px;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  border: 0;
+  cursor: pointer;
+  color: #e6edf3;
+  background:
+    radial-gradient(circle at 50% 45%, rgba(0,212,255,0.18) 0%, transparent 55%),
+    linear-gradient(180deg, #0c1219 0%, #050709 100%);
+  transition: filter 0.2s;
+}
+.video-facade:hover { filter: brightness(1.15); }
+.video-facade-play {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 84px;
+  height: 84px;
+  border-radius: 50%;
+  background: rgba(0, 212, 255, 0.92);
+  color: #061015;
+  box-shadow: 0 0 24px rgba(0,212,255,0.45);
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+.video-facade:hover .video-facade-play {
+  transform: scale(1.05);
+  box-shadow: 0 0 32px rgba(0,212,255,0.65);
+}
+.video-facade-label {
+  font-size: 14px;
+  letter-spacing: 0.5px;
+  color: var(--text-dim);
+}
+
 /* Feature grid */
 .features {
   display: grid;

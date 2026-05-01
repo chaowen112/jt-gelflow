@@ -9,7 +9,7 @@
   <meta property="og:description" content="Real-time GELF network traffic visualization — Flow / 2D Map / 3D Globe.">
   <meta property="og:type" content="website">
   <link rel="icon" type="image/png" href="favicon.png">
-  <link rel="stylesheet" href="style.css?v=1.5.0-3">
+  <link rel="stylesheet" href="style.css?v=1.5.0-4">
 </head>
 <body>
 
@@ -56,12 +56,12 @@
   <h2>See it move.</h2>
   <p class="subhead">Live network traffic flowing across the four views.</p>
   <div class="video-wrap">
-    <video controls preload="metadata"
-           src="demo.mp4"
-           playsinline>
-      Your browser doesn't support HTML5 video.
-      <a href="demo.mp4">Download the demo video</a>.
-    </video>
+    <button class="video-facade" type="button" data-video="demo.mp4" aria-label="Play demo">
+      <span class="video-facade-play" aria-hidden="true">
+        <svg width="36" height="36" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+      </span>
+      <span class="video-facade-label">Watch demo</span>
+    </button>
   </div>
 </section>
 
@@ -239,6 +239,21 @@ python3 run.py</code></pre>
     lb.addEventListener('click', e => { if (e.target === lb) close(); });
     document.addEventListener('keydown', e => { if (!lb.hidden && e.key === 'Escape') close(); });
   })();
+
+  // Demo video facade — swap the placeholder for a real <video> only when
+  // the user actually clicks Play. Saves the page from fetching demo.mp4
+  // (or even its metadata) on first paint.
+  document.querySelectorAll('.video-facade').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const v = document.createElement('video');
+      v.src = btn.dataset.video;
+      v.controls = true;
+      v.autoplay = true;
+      v.playsInline = true;
+      v.preload = 'auto';
+      btn.replaceWith(v);
+    });
+  });
 
   // Mobile nav — hamburger toggles the link drawer; tapping a link or
   // outside the nav closes it.

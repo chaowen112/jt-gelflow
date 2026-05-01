@@ -9,7 +9,7 @@
   <meta property="og:description" content="即時 GELF 網路流量視覺化 — 流量圖 / 2D 地圖 / 3D 地球 / 桑基圖。">
   <meta property="og:type" content="website">
   <link rel="icon" type="image/png" href="favicon.png">
-  <link rel="stylesheet" href="style.css?v=1.5.0-3">
+  <link rel="stylesheet" href="style.css?v=1.5.0-4">
 </head>
 <body>
 
@@ -55,12 +55,12 @@
   <h2>看它跑起來。</h2>
   <p class="subhead">即時流量在四種檢視間流動的真實畫面。</p>
   <div class="video-wrap">
-    <video controls preload="metadata"
-           src="demo.mp4"
-           playsinline>
-      你的瀏覽器不支援 HTML5 影片標籤。
-      <a href="demo.mp4">下載影片檔</a>。
-    </video>
+    <button class="video-facade" type="button" data-video="demo.mp4" aria-label="播放影片">
+      <span class="video-facade-play" aria-hidden="true">
+        <svg width="36" height="36" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+      </span>
+      <span class="video-facade-label">觀看影片</span>
+    </button>
   </div>
 </section>
 
@@ -236,6 +236,19 @@ python3 run.py</code></pre>
     lb.addEventListener('click', e => { if (e.target === lb) close(); });
     document.addEventListener('keydown', e => { if (!lb.hidden && e.key === 'Escape') close(); });
   })();
+
+  // 影片佔位：使用者按下播放才插入真正的 <video>，避免首次載入時抓 demo.mp4。
+  document.querySelectorAll('.video-facade').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const v = document.createElement('video');
+      v.src = btn.dataset.video;
+      v.controls = true;
+      v.autoplay = true;
+      v.playsInline = true;
+      v.preload = 'auto';
+      btn.replaceWith(v);
+    });
+  });
 
   // 行動版選單：漢堡按鈕展開連結；點選連結或選單外都會收起。
   (function () {
