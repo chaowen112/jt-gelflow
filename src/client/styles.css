@@ -628,7 +628,9 @@ body {
   left: 0;
 }
 
-/* Settings Panel - Overlay mode */
+/* Settings Panel - Overlay mode.
+   z-index 600 so it stacks above the .loading-overlay (z-index 500); without
+   this the user can't configure the system before any GELF data arrives. */
 .settings-panel {
   position: fixed;
   top: 0;
@@ -640,7 +642,7 @@ body {
   display: flex;
   flex-direction: column;
   overflow: hidden;
-  z-index: 300;
+  z-index: 600;
   animation: settings-slide-in 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
   box-shadow: -5px 0 30px rgba(0, 0, 0, 0.5);
 }

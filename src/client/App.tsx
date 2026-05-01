@@ -245,6 +245,22 @@ function AppContent() {
     }
   }, [connected]);
 
+  // Once the WebSocket is connected, the UI is functional even without GELF
+  // data. Don't trap the user behind the loading overlay if no logs ever
+  // arrive — give the first event 2 s to land, otherwise drop the overlay
+  // and let the canvas show its own empty state.
+  useEffect(() => {
+    if (!connected) return;
+    if (hasReceivedFirstEvent.current) return;
+    const timer = window.setTimeout(() => {
+      if (!hasReceivedFirstEvent.current) {
+        setReadyToRender(true);
+        setShowLoadingOverlay(false);
+      }
+    }, 2000);
+    return () => window.clearTimeout(timer);
+  }, [connected]);
+
   // Load config
   const loadConfig = useCallback(() => {
     getConfig().then(cfg => {
