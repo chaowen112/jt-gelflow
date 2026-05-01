@@ -180,7 +180,7 @@ If you restrict source addresses, scope each rule to the operator subnet (8099) 
 ```nginx
 server {
   listen 443 ssl http2;
-  server_name flow.example.com;
+  server_name gelflow.example.com;
   ssl_certificate     /etc/ssl/certs/example.com.crt;
   ssl_certificate_key /etc/ssl/private/example.com.key;
   client_max_body_size 100M;
