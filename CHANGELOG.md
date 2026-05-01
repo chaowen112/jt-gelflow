@@ -6,6 +6,54 @@ All notable changes to this project will be documented in this file. The format 
 
 ---
 
+## [1.5.1] — 2026-05-01
+
+Field-mapping flexibility plus a stack of operational fixes that surfaced when v1.5.0 was put on a customer box. Non-canonical GELF schemas (Suricata, vendor exports) now flow correctly through every view; install and upgrade are no longer susceptible to chicken-and-egg dependency gaps; the dashboard is operable before the first log lands.
+
+### Added
+
+- **Configurable country GELF field names** — new `mapping.src_country_field` (default `source_ip_country_code`) and `mapping.dst_country_field` (default `destination_ip_country_code`). Settings UI exposes them as a paired GELF-field-name + display-name row in Field Mapping. The 2D Map / 3D Globe Country Top-N panel and Sankey Country column both honour these.
+- **Field Mapping warning hint** — amber callout at the top of the Field Mapping section reminding users that renaming fields here also requires updating Label Templates that reference them, otherwise node and edge labels render empty.
+- **Value Field event-count mode hint** — explicit guidance in the Value Field section explaining how to use event counting for sources without a byte-length field (Suricata IDS, audit logs): point `value_field` at a name that doesn't exist in messages, leave Default at 1, every event then contributes 1 unit. The Sankey hover tooltip already shows the events total.
+- **README field-mapping guide** — replaces the minimal table with a five-section overview (Field Mapping, Value Field, Label Templates, GeoIP, Zones), the cross-section dependencies, and a complete worked Suricata example listing every settings field.
+- **Landing-page Mapping section** — five-card overview between Features and Hotkeys covering the same five settings blocks with their gotchas and defaults; nav gets a "Mapping" link.
+- **Landing-page Hotkeys section** — list of the keyboard shortcuts (1/2/3/4 view switch, Space pause, +/− zoom, 0 reset, arrows pan).
+- **`curl` prerequisite hint** — README, INSTALL, and the landing page now spell out, ahead of the one-line install, that minimal Linux images may not ship `curl` and need `apt/dnf/pacman/zypper install curl` first.
+- **Click-to-load video facade with poster** — `demo.mp4` (down from 33 MB to 4.8 MB at 720p) is no longer fetched on first paint. The facade displays a frame extracted from the actual video so there's no chrome/no-chrome mismatch when the user hits Play.
+- **Mobile hamburger nav** — landing nav collapses into a drawer below 720px instead of horizontally scrolling and clipping items; brand stays put.
+
+### Changed
+
+- **CLI is symlinked, not copied** — `/usr/local/bin/jt-gelflow` now points at `/opt/jt-gelflow/bin/jt-gelflow`. Pre-fix, every CLI bug fix had to wait for an explicit re-run of `install.sh` because the user-facing copy was frozen; now `git pull` refreshes the active CLI immediately.
+- **`bin/jt-gelflow` auto-elevates via `sudo`** — running any privileged subcommand (`start`/`stop`/`restart`/`update`/`uninstall`) as a non-root user now re-execs the script under `sudo` with the original argv. Errors out only if `sudo` itself isn't installed.
+- **`bin/jt-gelflow update` skips frontend rebuild on old Node** — Vite 5 requires Node 18+. Pre-fix, Ubuntu 22.04's apt `npm` (Node 12) made `update` abort with `SyntaxError: Unexpected reserved word` and the service was never restarted. Now mirrors `install.sh`'s behaviour: log a notice, fall back to the committed `dist/` that `git pull` already refreshed.
+- **Loading overlay drops 2 s after WebSocket connects** even without GELF data. The dashboard is fully operable (incl. settings panel) before any log arrives. Prior to this, the overlay only hid when the first event landed, trapping users who hadn't pointed a log source at the box yet.
+- **Settings panel z-index 300 → 600** — above the loading overlay, so the gear button always opens a usable panel.
+- **systemd unit** sets `TimeoutStopSec=10` and `KillMode=mixed` — a slow Python shutdown gets SIGKILL'd at 10 s instead of the systemd default 90 s.
+- **Server explicitly closes live WebSockets on shutdown** — `runner.cleanup()` no longer parks waiting on handler coroutines stuck in `async for msg in ws`. With the WS-close fix, `systemctl restart` returns in subseconds even with a browser tab open.
+- **Demo screenshots downscaled** — 1723px → 1280px wide PNGs reduce browser scaling ratio from 4.8× to 3.5× in the thumbnail grid; visibly less aliasing. CSS adds `image-rendering: auto` and a GPU-compositing hint.
+- **Features grid pinned to 3×3** on desktop (was `auto-fit/minmax` producing a stranded 9th card).
+
+### Fixed
+
+- **2D Map / 3D Globe rendered nothing on non-canonical GELF schemas.** `flow_aggregator` only copied canonical names (`source_ip_geolocation`, `destination_ip_geolocation`) into the per-flow `fields` blob it sends to the frontend; `convertToGlobeData` then found nothing to read. Configured `geoip.source_field` / `destination_field` are now passed through.
+- **Country Top-N panel was empty even when the map showed flows.** `convertToGlobeData` was hardcoded to `source_ip_country_code` / `destination_ip_country_code`. Now reads via configured `mapping.src_country_field` / `dst_country_field`.
+- **External node label showed the internal IP on the headline with the external IP only in parens** when src/dst weren't canonical names. The dst-side field-swap list in `flow_aggregator` is now seeded from the user's configured `src_field` / `dst_field` / PTR / country before falling back to canonical names.
+- **Empty node boxes when `node_label_template` referenced a field that doesn't exist in the user's messages.** Aggregator now falls back to the raw IP (already extracted from `mapping.src_field`) when the template renders to empty / whitespace.
+- **`install.sh` failed mid-flight on a vanilla Ubuntu 22.04** because `python3` is preinstalled but `python3-pip` isn't. New `ensure_python_pip` step installs the right per-distro package when `python3 -m pip` isn't available.
+- **Copy button drifted with horizontal `<pre>` scroll** — moved onto a non-scrolling wrapper.
+- **Video element height collapsed and snapped back** the moment the user clicked Play. Aspect ratio 16:9 now locked from frame zero.
+- **Mobile nav: brand wrapped to two lines and 繁體中文 button broke into vertical characters** — replaced horizontal-scroll nav with a hamburger drawer below 720px.
+- **Screenshot tile padding restored** (was clobbered by the lightbox button reset, leaving thumbnails flush against the card edge).
+- **`nginx` reverse-proxy example uses `gelflow.example.com`** — the previous `flow.example.com` collided with the project's Flow view name.
+
+### Notes
+
+- **No schema breaking changes.** Existing `config.json` files load unchanged; new `mapping.src_country_field` / `dst_country_field` keys default to the previous hardcoded values.
+- **Customer-side upgrade path:** `sudo bash <(curl -fsSL https://raw.githubusercontent.com/jasoncheng7115/jt-gelflow/main/install.sh)` (one-line re-run) installs the CLI symlink and pulls all of the above in a single pass.
+
+---
+
 ## [1.5.0] — 2026-05-01
 
 Sankey diagram lands as the fourth view mode, with composable columns, real-time refresh, full-chain hover highlight, and customisable column headers integrated into Field Mapping. Same release adds a global transition-effect setting (Warp / Matrix), a forward-compatible config loader (so older `config.json` files don't break the schema), and the long-needed `install.sh` fix that actually replaces the running Python on upgrade.

@@ -6,6 +6,54 @@
 
 ---
 
+## [1.5.1] — 2026-05-01
+
+針對 v1.5.0 部署到客戶機後一連串浮現的問題集中修正：欄位對應的彈性大幅放寬（非標準 GELF schema 例如 Suricata 也能跑通）、安裝與升級流程修掉相依性 chicken-and-egg、儀表板在第一筆 log 進來之前也能正常操作。
+
+### 新增
+
+- **可設定的國碼 GELF 欄位** — 新增 `mapping.src_country_field`（預設 `source_ip_country_code`）、`mapping.dst_country_field`（預設 `destination_ip_country_code`）。設定面板「欄位對應」區出現一組「GELF 欄位 + 顯示名稱」配對輸入。2D 地圖／3D 地球的 Country Top-N 統計與桑基圖的國別欄位都會用這個。
+- **欄位對應警告提示** — 「欄位對應」區頂端多一條琥珀色警告，提醒使用者改了這裡的欄位之後，下方「標籤範本」也要連動改成新的欄位名，否則節點與連線標籤會空白。
+- **數值欄位的事件計數模式說明** — 「數值欄位」區頂端多一段提示，解釋給沒有封包長度欄位的來源（Suricata IDS、稽核 log）怎麼用：把 `value_field` 填一個訊息中不存在的名稱、預設值維持 1，每個事件就貢獻 1 個單位。桑基圖游標停留時的 tooltip 本來就會顯示 events 總數。
+- **README 欄位對應指南** — 從原本 6 行表格擴成完整指南：五個設定區塊一覽（Field Mapping / Value Field / Label Templates / GeoIP / Zones）、改欄位時的注意事項、完整的 Suricata 範例（13 個欄位每個都列出該填什麼）。
+- **網頁 Mapping 區塊** — Features 與 Hotkeys 之間新增「欄位對應」五張卡片，總結五個設定區塊的踩雷重點。導覽列也加了連結。
+- **網頁 Hotkeys 區塊** — 列出鍵盤快速鍵（1/2/3/4 切檢視、Space 暫停、+/− 縮放、0 重設、方向鍵 pan）。
+- **`curl` 必裝提示** — README、INSTALL、網頁 landing 的安裝指令上方都先點明 minimal Linux 沒預裝 curl 的話要先 `apt/dnf/pacman/zypper install curl`。
+- **點擊才載入的影片佔位 + poster** — `demo.mp4` 縮成 720p（33 MB → 4.8 MB），首次進站不抓影片。佔位用的是從同一支影片擷出來的一格，按下播放外框不會閃。
+- **手機漢堡選單** — 行動版導覽列在 720px 以下變成漢堡 ☰，點下去從上方滑出選項，brand 不再被擠成兩行。
+
+### 變更
+
+- **CLI 改用 symlink，不再是檔案複本** — `/usr/local/bin/jt-gelflow` 現在指向 `/opt/jt-gelflow/bin/jt-gelflow`。修正前每次 CLI 修 bug 都要重跑 install.sh 才會生效，因為 user 路徑下的檔案是凍結的舊版；現在 `git pull` 一拉到新版立刻生效。
+- **`bin/jt-gelflow` 自動 sudo** — 一般使用者跑 `start` / `stop` / `restart` / `update` / `uninstall` 時會自動以 `sudo` 重執行自己。沒裝 `sudo` 才會回 error。
+- **`bin/jt-gelflow update` 偵測 Node 版本** — Vite 5 需要 Node 18+。修正前 Ubuntu 22.04 內建 npm 拉的是 Node 12，`update` 會在 build 那步炸 syntax error 導致整個 update 中止、service 沒重啟。現在跟 install.sh 一樣，遇到舊 Node 就直接用 `git pull` 拉到的 committed `dist/`。
+- **Loading overlay 在 WebSocket 連上 2 秒後消失**，不再等到第一筆 GELF 訊息進來才放使用者進去。修正前還沒接 log 的客戶會永遠卡在「awaiting data」、無法打開設定。
+- **設定面板 z-index 300 → 600**，蓋過 loading overlay，按齒輪一定打得開。
+- **systemd unit 加 `TimeoutStopSec=10` + `KillMode=mixed`** — Python 收到 SIGTERM 沒乾淨退出時，10 秒內就會 SIGKILL，不會卡 systemd 預設的 90 秒。
+- **Server shutdown 時主動關閉所有 WebSocket** — `runner.cleanup()` 不再卡在 handler 協程的 `async for msg in ws`。配上 TimeoutStopSec，`systemctl restart` 在瀏覽器還開著的情況下也能秒回。
+- **截圖檔縮小** — 1723px → 1280px 寬，瀏覽器縮放比從 4.8× 降到 3.5×，鋸齒明顯改善。CSS 加上 `image-rendering: auto` 與 GPU 合成 hint。
+- **Features 區塊鎖死 3×3 格** — 原本的 `auto-fit/minmax` 在桌機會跑出 4+4+1 的孤兒卡片。
+
+### 修正
+
+- **2D 地圖 / 3D 地球在非標準 GELF schema 下完全沒畫面。** `flow_aggregator` 只會把 canonical 名稱（`source_ip_geolocation`、`destination_ip_geolocation`）複製到傳給前端的 fields 字典，前端 `convertToGlobeData` 因此找不到值。現在連使用者設定的 `geoip.source_field` / `destination_field` 也會帶下去。
+- **Country Top-N 統計面板就算地圖上有畫流量也是空的。** `convertToGlobeData` 寫死 `source_ip_country_code` / `destination_ip_country_code`，現在改成讀使用者設定的 `mapping.src_country_field` / `dst_country_field`。
+- **External 節點標籤頂著內網 IP、外部 IP 只在括號裡** — 當 src/dst 不是 canonical 命名時，dst-side 欄位對調表是寫死的，現在會優先使用使用者設定的 `src_field` / `dst_field` / PTR / 國碼，沒對到才掉回 canonical 名稱。
+- **Template 解出空字串時節點變成空盒** — 例如 template 仍寫 `{src_ip}` 但欄位已改名。現在會 fallback 到 `mapping.src_field` 取出來的原始 IP。
+- **`install.sh` 在 vanilla Ubuntu 22.04 中段炸掉** — 因為 `python3` 預裝但 `python3-pip` 沒有。新增 `ensure_python_pip` 偵測並裝對應 distro 的套件。
+- **Copy 按鈕跟著 `<pre>` 水平捲動而漂走** — 改放在不會 scroll 的外層 wrapper。
+- **影片區按下播放時高度先塌再彈回** — `<video>` 元素 aspect-ratio 鎖 16:9，從第一幀就維持正確高度。
+- **手機版 JT-GELFLOW 品牌字被切兩行、繁體中文按鈕被擠成一字一行** — 720px 以下整組導覽改成漢堡選單。
+- **截圖 tile 上方頂到框邊** — 之前 lightbox 的 button reset 把 padding 蓋掉了，已修。
+- **nginx 反向代理範例改用 `gelflow.example.com`** — 原本的 `flow.example.com` 跟專案的「Flow 檢視」名稱撞名容易誤解。
+
+### 注意事項
+
+- **沒有破壞性 schema 變更**。舊的 `config.json` 直接可以讀；新增的 `mapping.src_country_field` / `dst_country_field` 不存在時會用先前寫死的預設值。
+- **客戶端升級方式**：`sudo bash <(curl -fsSL https://raw.githubusercontent.com/jasoncheng7115/jt-gelflow/main/install.sh)`（重跑一行 install.sh）一次拉到 CLI symlink、所有 fix 與重啟。
+
+---
+
 ## [1.5.0] — 2026-05-01
 
 桑基圖正式成為第 4 種檢視，欄位可自由組合、即時更新、滑鼠停在流量帶上會點亮整條鏈路、欄位顯示名稱整合進「欄位對應」設定。同時加入全域過場特效設定（光脈衝 / 字元雨）、向前相容的設定載入器（舊版 `config.json` 不會卡住 schema），並修掉長期遺留的 `install.sh` 升級時不會重啟 Python 的問題。

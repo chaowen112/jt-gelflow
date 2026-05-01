@@ -605,10 +605,20 @@ export function SankeyCanvas({
       return visited;
     };
 
+    // Event-count mode heuristic: when the user has no real value_field
+    // (e.g. Suricata IDS logs), every flow contributes value_default=1 →
+    // the link value equals its event count. In that case showing '1 B'
+    // alongside '1 event' is just confusing — drop the byte size and
+    // leave the events count standing alone.
+    const eventsOnly = (v: number, ev: number) => v === ev;
     const linkTooltipHTML = (d: SLink) => {
       const sN = d.source as SNode;
       const tN = d.target as SNode;
-      return `${sN.label} → ${tN.label}<br/><b>${formatBytes(d.value)}</b> &nbsp; · &nbsp; ${d.events.toLocaleString()} ${d.events === 1 ? 'event' : 'events'}`;
+      const eventsLabel = `${d.events.toLocaleString()} ${d.events === 1 ? 'event' : 'events'}`;
+      const body = eventsOnly(d.value, d.events)
+        ? `<b>${eventsLabel}</b>`
+        : `<b>${formatBytes(d.value)}</b> &nbsp; · &nbsp; ${eventsLabel}`;
+      return `${sN.label} → ${tN.label}<br/>${body}`;
     };
     const onLinkEnter = (event: any, d: SLink) => {
       const chain = connectedChain(d);
@@ -685,7 +695,12 @@ export function SankeyCanvas({
     };
     const nodeTooltipHTML = (n: SNode) => {
       const ev = nodeEventTotal(n);
-      return `${n.label}<br/><b>${formatBytes(n.value ?? 0)}</b> &nbsp; · &nbsp; ${ev.toLocaleString()} ${ev === 1 ? 'event' : 'events'}`;
+      const v = n.value ?? 0;
+      const eventsLabel = `${ev.toLocaleString()} ${ev === 1 ? 'event' : 'events'}`;
+      const body = eventsOnly(v, ev)
+        ? `<b>${eventsLabel}</b>`
+        : `<b>${formatBytes(v)}</b> &nbsp; · &nbsp; ${eventsLabel}`;
+      return `${n.label}<br/>${body}`;
     };
     const onNodeMove = (event: any, n: SNode) => {
       setTooltip({ x: event.offsetX, y: event.offsetY, html: nodeTooltipHTML(n) });
