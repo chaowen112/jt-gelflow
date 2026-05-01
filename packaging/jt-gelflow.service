@@ -12,6 +12,11 @@ Restart=on-failure
 RestartSec=5
 StandardOutput=journal
 StandardError=journal
+# Don't make `systemctl restart` block for the systemd default 90s if the
+# Python shutdown stalls (e.g. browser still has a WebSocket open). 10s is
+# generous for a clean exit; anything longer gets a SIGKILL.
+TimeoutStopSec=10
+KillMode=mixed
 
 # Hardening
 NoNewPrivileges=true
