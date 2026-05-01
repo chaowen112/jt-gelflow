@@ -744,6 +744,8 @@ function AppContent() {
                   height={dimensions.height}
                   internalCidrs={zones?.internal_cidrs || []}
                   geoipConfig={geoipConfig}
+                  srcCountryField={config?.mapping?.src_country_field || 'source_ip_country_code'}
+                  dstCountryField={config?.mapping?.dst_country_field || 'destination_ip_country_code'}
                   paused={paused || !connected}
                   mode="2d"
                   internalFilterIps={(zones?.internal_filter_apply_to || ['flow']).includes('2d-geo') ? (zones?.internal_filter_ips || []) : []}
@@ -767,6 +769,8 @@ function AppContent() {
                   height={dimensions.height}
                   internalCidrs={zones?.internal_cidrs || []}
                   geoipConfig={geoipConfig}
+                  srcCountryField={config?.mapping?.src_country_field || 'source_ip_country_code'}
+                  dstCountryField={config?.mapping?.dst_country_field || 'destination_ip_country_code'}
                   paused={paused || !connected}
                   mode="3d"
                   autoRotate={autoRotate}

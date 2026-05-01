@@ -60,8 +60,22 @@ interface NodeLocationInfo {
 export function convertToGlobeData(
   graph: GraphData,
   config: GeoIPConfig,
-  internalCidrs: string[]
+  internalCidrs: string[],
+  // Optional GELF field names for country / city — fall back to canonical
+  // names when the caller doesn't supply them. Needed so logs from sources
+  // like Suricata (suricata_srcip_country_code) show up in the country
+  // stats panel and hover tooltips, not just on the map points.
+  fields?: {
+    srcCountryField?: string;
+    dstCountryField?: string;
+    srcCityField?: string;
+    dstCityField?: string;
+  },
 ): { nodes: GlobeNode[]; arcs: GlobeArc[] } {
+  const srcCountryField = fields?.srcCountryField || 'source_ip_country_code';
+  const dstCountryField = fields?.dstCountryField || 'destination_ip_country_code';
+  const srcCityField = fields?.srcCityField || 'source_ip_city_name';
+  const dstCityField = fields?.dstCityField || 'destination_ip_city_name';
   const nodes: GlobeNode[] = [];
   const arcs: GlobeArc[] = [];
   const nodeInfoCache = new Map<string, NodeLocationInfo>();
@@ -81,8 +95,8 @@ export function convertToGlobeData(
     if (!nodeInfoCache.has(edge.key.src)) {
       nodeInfoCache.set(edge.key.src, {
         geo: srcGeo,
-        countryCode: edge.fields?.['source_ip_country_code'] as string | undefined,
-        cityName: edge.fields?.['source_ip_city_name'] as string | undefined,
+        countryCode: edge.fields?.[srcCountryField] as string | undefined,
+        cityName: edge.fields?.[srcCityField] as string | undefined,
       });
     }
 
@@ -92,8 +106,8 @@ export function convertToGlobeData(
     if (!nodeInfoCache.has(edge.key.dst)) {
       nodeInfoCache.set(edge.key.dst, {
         geo: dstGeo,
-        countryCode: edge.fields?.['destination_ip_country_code'] as string | undefined,
-        cityName: edge.fields?.['destination_ip_city_name'] as string | undefined,
+        countryCode: edge.fields?.[dstCountryField] as string | undefined,
+        cityName: edge.fields?.[dstCityField] as string | undefined,
       });
     }
   }

@@ -17,6 +17,10 @@ interface Props {
   height: number;
   internalCidrs: string[];
   geoipConfig: GeoIPConfig;
+  // Country GELF field names from MappingConfig — passed through so the
+  // country stats panel and hover tooltips work for non-canonical schemas.
+  srcCountryField?: string;
+  dstCountryField?: string;
   paused?: boolean;
   mode?: GlobeMode;  // Controlled mode from parent
   autoRotate?: boolean;  // Controlled from parent (3D globe only)
@@ -98,6 +102,8 @@ export function GlobeCanvas({
   height,
   internalCidrs,
   geoipConfig,
+  srcCountryField,
+  dstCountryField,
   paused = false,
   mode = '3d',
   autoRotate = true,
@@ -195,7 +201,10 @@ export function GlobeCanvas({
   // Convert graph data to globe format with filtering
   const { nodes, arcs } = useMemo(() => {
     try {
-      const data = convertToGlobeData(graph, geoipConfig, internalCidrs);
+      const data = convertToGlobeData(graph, geoipConfig, internalCidrs, {
+        srcCountryField,
+        dstCountryField,
+      });
       let filteredNodes = data.nodes;
       let filteredArcs = data.arcs;
 
@@ -241,7 +250,7 @@ export function GlobeCanvas({
       console.error('Error converting data:', e);
       return { nodes: [], arcs: [] };
     }
-  }, [graph, geoipConfig, internalCidrs, internalFilterIps, topNInternal, topNExternal]);
+  }, [graph, geoipConfig, internalCidrs, internalFilterIps, topNInternal, topNExternal, srcCountryField, dstCountryField]);
 
   // Compute country code statistics (top 10)
   const countryStats = useMemo(() => {
