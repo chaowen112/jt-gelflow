@@ -9,7 +9,7 @@
   <meta property="og:description" content="Real-time GELF network traffic visualization — Flow / 2D Map / 3D Globe.">
   <meta property="og:type" content="website">
   <link rel="icon" type="image/png" href="favicon.png">
-  <link rel="stylesheet" href="style.css?v=1.5.0-10">
+  <link rel="stylesheet" href="style.css?v=1.5.0-11">
 </head>
 <body>
 
@@ -72,6 +72,12 @@
       <button class="tab active" data-target="tab-linux" type="button">Linux (one-line)</button>
       <button class="tab" data-target="tab-manual" type="button">Manual</button>
     </div>
+    <p class="prereq-note">
+      Need <code class="kbd">curl</code> first. If it's missing on a minimal Linux box:
+      <code class="kbd">sudo apt install -y curl</code> ·
+      <code class="kbd">sudo dnf install -y curl</code> ·
+      <code class="kbd">sudo pacman -S --noconfirm curl</code>
+    </p>
     <div class="code-block">
       <button class="copy-btn" data-copy="linux">copy</button>
       <pre id="tab-linux"><code id="cmd-linux">curl -fsSL https://raw.githubusercontent.com/jasoncheng7115/jt-gelflow/main/install.sh | sudo bash</code></pre>

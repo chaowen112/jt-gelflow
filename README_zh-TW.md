@@ -19,6 +19,9 @@
 
 僅支援 Linux（Ubuntu / Debian / RHEL / Fedora / Arch / openSUSE 皆可）：
 
+> **要先有 `curl`。** 部分極簡 Linux 安裝預設沒裝 curl。若 `curl --version` 顯示「找不到指令」：
+> Debian/Ubuntu：`sudo apt install -y curl` · RHEL/Fedora：`sudo dnf install -y curl` · Arch：`sudo pacman -S --noconfirm curl` · openSUSE：`sudo zypper install -y curl`
+
 ```bash
 curl -fsSL https://raw.githubusercontent.com/jasoncheng7115/jt-gelflow/main/install.sh | sudo bash
 ```

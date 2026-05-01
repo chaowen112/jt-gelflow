@@ -19,6 +19,9 @@ Project site: <https://jasoncheng7115.github.io/jt-gelflow/>
 
 Linux only (Ubuntu / Debian / RHEL / Fedora / Arch / openSUSE):
 
+> **Need `curl` first.** Some minimal Linux installs don't ship it. If `curl --version` says "command not found":
+> Debian/Ubuntu: `sudo apt install -y curl` · RHEL/Fedora: `sudo dnf install -y curl` · Arch: `sudo pacman -S --noconfirm curl` · openSUSE: `sudo zypper install -y curl`
+
 ```bash
 curl -fsSL https://raw.githubusercontent.com/jasoncheng7115/jt-gelflow/main/install.sh | sudo bash
 ```

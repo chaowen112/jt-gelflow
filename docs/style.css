@@ -228,6 +228,17 @@ code, pre { font-family: ui-monospace, SFMono-Regular, "JetBrains Mono", Menlo, 
    along with the code text. */
 .install .code-block { position: relative; }
 .install .code-block[hidden] { display: none; }
+.install .prereq-note {
+  margin: 14px 0 12px;
+  padding: 12px 16px;
+  background: rgba(0, 212, 255, 0.05);
+  border: 1px dashed var(--border);
+  border-radius: var(--radius);
+  font-size: 13px;
+  color: var(--text-dim);
+  line-height: 1.7;
+}
+.install .prereq-note code.kbd { font-size: 12px; }
 .install pre {
   background: var(--bg-elev);
   border: 1px solid var(--border);

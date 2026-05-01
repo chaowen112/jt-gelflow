@@ -22,7 +22,18 @@ This is the operations-grade install procedure for **JT-GELFLOW v1.5.0+**. For a
 
 ## 1. Install (one-line, recommended)
 
-The canonical entry point is the install script in the GitHub repo. Run it as root:
+The canonical entry point is the install script in the GitHub repo. Run it as root.
+
+**Need `curl` first.** Minimal Linux base images often skip it. If `curl --version` returns "command not found", install it:
+
+| Distro | Command |
+|---|---|
+| Debian / Ubuntu | `sudo apt install -y curl` |
+| RHEL / Fedora / Rocky / Alma | `sudo dnf install -y curl` |
+| Arch | `sudo pacman -S --noconfirm curl` |
+| openSUSE | `sudo zypper install -y curl` |
+
+Then:
 
 ```bash
 curl -fsSL https://raw.githubusercontent.com/jasoncheng7115/jt-gelflow/main/install.sh | sudo bash

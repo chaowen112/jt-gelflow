@@ -22,7 +22,18 @@
 
 ## 1. 安裝（一行指令，建議）
 
-正式入口為 GitHub repo 內的安裝腳本，以 root 執行：
+正式入口為 GitHub repo 內的安裝腳本，以 root 執行。
+
+**先確認有 `curl`。** 部分極簡 Linux 映像沒預裝。若 `curl --version` 顯示「找不到指令」，先裝起來：
+
+| 發行版 | 指令 |
+|---|---|
+| Debian / Ubuntu | `sudo apt install -y curl` |
+| RHEL / Fedora / Rocky / Alma | `sudo dnf install -y curl` |
+| Arch | `sudo pacman -S --noconfirm curl` |
+| openSUSE | `sudo zypper install -y curl` |
+
+然後：
 
 ```bash
 curl -fsSL https://raw.githubusercontent.com/jasoncheng7115/jt-gelflow/main/install.sh | sudo bash
