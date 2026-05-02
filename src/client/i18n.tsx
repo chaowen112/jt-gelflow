@@ -151,7 +151,7 @@ const translations: Record<Language, Record<string, string>> = {
     'settings.showTrafficValueHint': 'Display traffic value at the bottom of node labels.',
 
     // GeoIP settings
-    'settings.geoipSettings': '3D Globe / GeoIP Settings',
+    'settings.geoipSettings': '2D Map / 3D Globe Settings',
     'settings.sourceGeoField': 'Source GeoIP Field',
     'settings.sourceGeoFieldHint': 'Field containing source coordinates (format: "lat,lng")',
     'settings.destGeoField': 'Destination GeoIP Field',
@@ -363,7 +363,7 @@ const translations: Record<Language, Record<string, string>> = {
     'settings.showTrafficValueHint': '在節點標籤底部顯示流量數值。',
 
     // GeoIP settings
-    'settings.geoipSettings': '3D 地球 / GeoIP 設定',
+    'settings.geoipSettings': '2D 地圖 / 3D 地球 設定',
     'settings.sourceGeoField': '來源 GeoIP 欄位',
     'settings.sourceGeoFieldHint': '包含來源座標的欄位（格式："lat,lng"）',
     'settings.destGeoField': '目的 GeoIP 欄位',
