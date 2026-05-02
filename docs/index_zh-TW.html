@@ -180,7 +180,8 @@ python3 run.py</code></pre>
     <div class="mapping-card">
       <h4>欄位對應</h4>
       <p>來源 / 目的 IP、協定、PTR、國碼。</p>
-      <p class="muted-line">預設：<code class="kbd">source_ip</code> · <code class="kbd">destination_ip</code> · <code class="kbd">protocol_name</code></p>
+      <p class="muted-line">IP：<code class="kbd">source_ip</code> · <code class="kbd">src_ip</code> · <code class="kbd">srcip</code> · <code class="kbd">suricata_srcip</code> …</p>
+      <p class="muted-line">協定：<code class="kbd">protocol_name</code> · <code class="kbd">proto</code> · <code class="kbd">ip_proto</code> · <code class="kbd">l4_proto</code></p>
     </div>
     <div class="mapping-card">
       <h4>數值欄位</h4>
@@ -194,8 +195,9 @@ python3 run.py</code></pre>
     </div>
     <div class="mapping-card">
       <h4>GeoIP / 地理定位</h4>
-      <p>2D 地圖 / 3D 地球的座標欄位。<strong>跟欄位對應獨立</strong> — 改 <code class="kbd">src_field</code> 不會自動改這裡。</p>
+      <p>2D 地圖 / 3D 地球的座標欄位（字串 <code class="kbd">"緯度,經度"</code>）。<strong>跟欄位對應獨立</strong> — 改 <code class="kbd">src_field</code> 不會自動改這裡。</p>
       <p class="muted-line">預設：<code class="kbd">source_ip_geolocation</code> · <code class="kbd">destination_ip_geolocation</code></p>
+      <p class="muted-line">常見其他命名：<code class="kbd">src_geolocation</code> · <code class="kbd">srcip_geolocation</code> · <code class="kbd">geoip_src_location</code></p>
     </div>
     <div class="mapping-card">
       <h4>區域設定</h4>

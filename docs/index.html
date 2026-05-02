@@ -181,7 +181,8 @@ python3 run.py</code></pre>
     <div class="mapping-card">
       <h4>Field Mapping</h4>
       <p>Source / destination IP, protocol, PTR, country code.</p>
-      <p class="muted-line">Defaults: <code class="kbd">source_ip</code> · <code class="kbd">destination_ip</code> · <code class="kbd">protocol_name</code></p>
+      <p class="muted-line">IP: <code class="kbd">source_ip</code> · <code class="kbd">src_ip</code> · <code class="kbd">srcip</code> · <code class="kbd">suricata_srcip</code> …</p>
+      <p class="muted-line">Protocol: <code class="kbd">protocol_name</code> · <code class="kbd">proto</code> · <code class="kbd">ip_proto</code> · <code class="kbd">l4_proto</code></p>
     </div>
     <div class="mapping-card">
       <h4>Value Field</h4>
@@ -195,8 +196,9 @@ python3 run.py</code></pre>
     </div>
     <div class="mapping-card">
       <h4>GeoIP</h4>
-      <p>Lat/lng field used by 2D Map / 3D Globe. <strong>Independent of Field Mapping</strong> — renaming <code class="kbd">src_field</code> does not rename this.</p>
+      <p>Lat/lng field used by 2D Map / 3D Globe (string <code class="kbd">"lat,lng"</code>). <strong>Independent of Field Mapping</strong> — renaming <code class="kbd">src_field</code> does not rename this.</p>
       <p class="muted-line">Defaults: <code class="kbd">source_ip_geolocation</code> · <code class="kbd">destination_ip_geolocation</code></p>
+      <p class="muted-line">Aliases: <code class="kbd">src_geolocation</code> · <code class="kbd">srcip_geolocation</code> · <code class="kbd">geoip_src_location</code></p>
     </div>
     <div class="mapping-card">
       <h4>Zones</h4>

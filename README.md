@@ -183,10 +183,10 @@ The dashboard works out of the box if your GELF messages use the canonical field
 
 | Settings section | What it controls | Default fields |
 |---|---|---|
-| **Field Mapping** | Source / destination IP, protocol, PTR, country code | `source_ip`, `destination_ip`, `protocol_name`, `source_ip_ptr`, `destination_ip_ptr`, `source_ip_country_code`, `destination_ip_country_code` |
+| **Field Mapping** | Source / destination IP, protocol, PTR, country code | Defaults: `source_ip`, `destination_ip`, `protocol_name`, `source_ip_ptr`, `destination_ip_ptr`, `source_ip_country_code`, `destination_ip_country_code`. Common alternatives: IP — `src_ip`/`dst_ip`, `srcip`/`dstip`, `client_ip`/`server_ip`, `suricata_srcip`/`suricata_dstip`. Protocol — `proto`, `protocol`, `ip_proto`, `l4_proto`. PTR — `src_hostname`/`dst_hostname`, `srcip_ptr`/`dstip_ptr`. Country — `srcip_country_code`/`dstip_country_code`, `geoip_src_country`/`geoip_dst_country` |
 | **Value Field** | Numeric field whose sum drives flow weight (bytes / packet length / event count) | `network_bytes` (Graylog), `bytes`, `length`, `datalen`, `packet_size`, `byte_count`, `octets` (NetFlow) — pick whichever your pipeline actually emits |
 | **Label Templates** | Strings rendered on each node and edge — referenced by `{field}` syntax | `{source_ip_ptr\|\|source_ip}`, `{protocol_name}:{destination_port\|0}` |
-| **GeoIP** | Lat/lng field used to plot 2D Map / 3D Globe points | `source_ip_geolocation`, `destination_ip_geolocation` |
+| **GeoIP** | Lat/lng field used to plot 2D Map / 3D Globe points (string `"lat,lng"`) | Default: `source_ip_geolocation`, `destination_ip_geolocation`. Common alternatives: `src_geolocation`/`dst_geolocation`, `srcip_geolocation`/`dstip_geolocation`, `geoip_src_location`/`geoip_dst_location` |
 | **Zones** | Internal / external CIDRs, top-N caps, per-view filter rules | `192.168.0.0/16`, `10.0.0.0/8`, `172.16.0.0/12` |
 
 #### What to watch when remapping

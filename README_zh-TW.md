@@ -183,10 +183,10 @@ curl -fsSL https://raw.githubusercontent.com/jasoncheng7115/jt-gelflow/main/inst
 
 | 設定區塊 | 控制什麼 | 預設欄位 |
 |---|---|---|
-| **欄位對應 (Field Mapping)** | 來源/目的 IP、協定、PTR、國碼 | `source_ip`, `destination_ip`, `protocol_name`, `source_ip_ptr`, `destination_ip_ptr`, `source_ip_country_code`, `destination_ip_country_code` |
+| **欄位對應 (Field Mapping)** | 來源/目的 IP、協定、PTR、國碼 | 預設：`source_ip`、`destination_ip`、`protocol_name`、`source_ip_ptr`、`destination_ip_ptr`、`source_ip_country_code`、`destination_ip_country_code`。常見其他命名：IP — `src_ip`/`dst_ip`、`srcip`/`dstip`、`client_ip`/`server_ip`、`suricata_srcip`/`suricata_dstip`。協定 — `proto`、`protocol`、`ip_proto`、`l4_proto`。PTR — `src_hostname`/`dst_hostname`、`srcip_ptr`/`dstip_ptr`。國碼 — `srcip_country_code`/`dstip_country_code`、`geoip_src_country`/`geoip_dst_country` |
 | **數值欄位 (Value Field)** | 加總後決定流量權重的數值欄位（位元組／封包長度／事件計數） | `network_bytes`（Graylog 預設）、`bytes`、`length`、`datalen`、`packet_size`、`byte_count`、`octets`（NetFlow）— 看你的 pipeline 實際送什麼 |
 | **標籤範本 (Label Templates)** | 節點與連線顯示文字，用 `{field}` 引用 | `{source_ip_ptr\|\|source_ip}`, `{protocol_name}:{destination_port\|0}` |
-| **GeoIP / 地理定位** | 2D 地圖／3D 地球的座標欄位 | `source_ip_geolocation`, `destination_ip_geolocation` |
+| **GeoIP / 地理定位** | 2D 地圖／3D 地球的座標欄位（字串 `"緯度,經度"`） | 預設：`source_ip_geolocation`、`destination_ip_geolocation`。常見其他命名：`src_geolocation`/`dst_geolocation`、`srcip_geolocation`/`dstip_geolocation`、`geoip_src_location`/`geoip_dst_location` |
 | **區域設定 (Zones)** | 內外網 CIDR、Top-N 限制、各檢視套用範圍 | `192.168.0.0/16`, `10.0.0.0/8`, `172.16.0.0/12` |
 
 #### 改欄位時的注意事項
