@@ -117,7 +117,7 @@
 |---|------|--------|
 | I1 | 連線時呼吸燈 | 綠點呼吸動畫 |
 | I2 | 斷線時靜止紅燈 | 殺 server，紅點靜止、動畫停 |
-| I3 | 首次連線載入畫面 | 硬重新整理，spinner 跑到 100% 後淡出 |
+| I3 | 首次連線載入畫面 | 強制重新整理，spinner 跑到 100% 後淡出 |
 | I4 | header FLW/EXT/INT 即時更新 | 看著計數隨 GELF 進來增加 |
 | I5 | 七段顯示器時鐘隨新 GELF 跳動 | 時鐘顯示最後一筆訊息時間 |
 | I6 | 搜尋列過濾 | 輸入 IP/port/proto，flows 過濾 |
@@ -135,7 +135,7 @@
 | J2 | 雙語對應結構一致 | `grep '^## '` 計數對齊 |
 | J3 | HTML 頁面解析 | `python3 -c "from html.parser import HTMLParser; HTMLParser().feed(open(...).read())"` 對 `docs/index*.html` 兩份 |
 | J4 | 對外文件無內網 IP | `grep -rE '192\.168\.[0-9]+\.[0-9]+'` 對 `*.md` `*.html` 僅看到 RFC1918 範例 |
-| J5 | 繁中文件無大陸用語 | 對 `信息`/`軟件`/`默認`/`用戶`/`數據`/`服務器`/`緩存`/`屏幕`/`回滾`/`容忍`/`高亮`/`帶寬`/`全局`/`函數`/`模塊`/`操作系統` 在 `*_zh-TW.md` 與 `index_zh-TW.html` grep 為空 |
+| J5 | 繁中文件無大陸用語 | 對 `信息`/`軟件`/`默認`/`用戶`/`數據`/`服務器`/`緩存`/`屏幕`/`回滾`/`容忍`/`高亮`/`帶寬`/`全局`/`函數`/`模塊`/`操作系統`/`硬重新整理` 在 `*_zh-TW.md` 與 `index_zh-TW.html` grep 為空 |
 | J6 | `package.json`、`App.tsx:VERSION`、`SettingsPanel.tsx:VERSION`、README header、landing footer 版本一致 | 全部 grep 後 diff |
 | J7 | CHANGELOG 有此版條目 | `grep "^## \[$(jq -r .version package.json)\]" CHANGELOG.md` |
 

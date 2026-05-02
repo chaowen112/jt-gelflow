@@ -110,7 +110,7 @@ curl -s http://127.0.0.1:8099/api/stats
 curl -sI http://$(hostname -I | awk '{print $1}'):8099/ | head -1
 ```
 
-瀏覽器若已開著舊頁：**硬重新整理**（`Ctrl+Shift+R` / `Cmd+Shift+R`）丟掉舊 JS bundle。新版 bundle 有不同 hash，會自動載入。
+瀏覽器若已開著舊頁：**強制重新整理**（`Ctrl+Shift+R` / `Cmd+Shift+R`）丟掉舊 JS bundle。新版 bundle 有不同 hash，會自動載入。
 
 ---
 
@@ -179,7 +179,7 @@ sudo jt-gelflow uninstall --purge  # 連 config.json 一併刪除
 | `fatal: Not possible to fast-forward, aborting.` | upstream 歷史不再從本地 commit 線性連通（force-push / re-init / 分支重組）。 | 用韌性升級：重跑 `install.sh`。 |
 | 升級後 service 還跑舊 code | v1.5.0 之前的 `install.sh` bug — 用 `enable --now`（已執行時是 no-op）。 | v1.5.0 已修。較舊安裝請在升級後 `sudo systemctl restart jt-gelflow.service`。 |
 | `Error loading config, using defaults: unexpected keyword argument 'X'` | v1.5.0 之前的 server — 嚴格 config 解析。 | v1.5.0+ 對未知 key 做容錯處理。要消警告就手動把那個 key 從 `config.json` 移除。 |
-| 升級後瀏覽器仍是舊 UI | 快取住的 JS bundle（hash 不同）。 | 硬重新整理（`Ctrl+Shift+R` / `Cmd+Shift+R`）。 |
+| 升級後瀏覽器仍是舊 UI | 快取住的 JS bundle（hash 不同）。 | 強制重新整理（`Ctrl+Shift+R` / `Cmd+Shift+R`）。 |
 | 設定頁的客製值消失 | config 沒留下 — 看 `journalctl -u jt-gelflow.service` 是否有 `Error loading config…`。 | 從第 3 節做的 `.before-DATE` 快照還原。 |
 
 ---
