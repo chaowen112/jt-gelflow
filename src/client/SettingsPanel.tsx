@@ -3,7 +3,7 @@ import type { MappingConfig, FieldInfo, ZoneConfig, GeoIPConfig, ViewMode } from
 import { getMapping, updateMapping, getFields, clearFields, previewTemplate, getConfig, updateConfig, detectLocation } from './api';
 import { useTranslation } from './i18n';
 
-const VERSION = '1.5.2';
+const VERSION = '1.5.3';
 
 // Chevron icon for collapsible sections
 const ChevronIcon = ({ expanded }: { expanded: boolean }) => (
@@ -64,6 +64,7 @@ export function SettingsPanel({ open, onClose, onSave }: Props) {
   const [focusZoomLevel, setFocusZoomLevel] = useState(14);
   const [defaultView, setDefaultView] = useState<ViewMode>('flow');
   const [transitionEffect, setTransitionEffect] = useState<'warp' | 'matrix'>('warp');
+  const [sankeyWidthMode, setSankeyWidthMode] = useState<'value' | 'events'>('value');
 
   // Collapsible sections state
   const [expandedSections, setExpandedSections] = useState<Record<string, boolean>>({
@@ -72,6 +73,7 @@ export function SettingsPanel({ open, onClose, onSave }: Props) {
     fieldMapping: false,
     valueField: false,
     labelTemplates: false,
+    sankey: false,
     discoveredFields: false,
   });
 
@@ -104,6 +106,7 @@ export function SettingsPanel({ open, onClose, onSave }: Props) {
         setFlowTtlSeconds(config.flow_ttl_seconds || 5);
         setDefaultView(config.default_view || 'flow');
         setTransitionEffect((config.transition_effect as 'warp' | 'matrix') || 'warp');
+        setSankeyWidthMode((config.sankey_width_mode as 'value' | 'events') || 'value');
         // Load GeoIP settings
         if (config.geoip) {
           setGeoipSourceField(config.geoip.source_field || 'source_ip_geolocation');
@@ -197,6 +200,7 @@ export function SettingsPanel({ open, onClose, onSave }: Props) {
         flow_ttl_seconds: flowTtlSeconds,
         default_view: defaultView,
         transition_effect: transitionEffect,
+        sankey_width_mode: sankeyWidthMode,
         zones: {
           internal_cidrs: internalCidrs,
           external_cidrs: [],
@@ -496,6 +500,28 @@ export function SettingsPanel({ open, onClose, onSave }: Props) {
                   {t('settings.showTrafficValueHint')}
                 </div>
               </div>
+              </div>
+              )}
+            </div>
+
+            <div className="settings-section">
+              <div className="section-header" onClick={() => toggleSection('sankey')}>
+                <h3>{t('settings.sankeySettings')}</h3>
+                <ChevronIcon expanded={expandedSections.sankey} />
+              </div>
+              {expandedSections.sankey && (
+              <div className="section-content">
+                <div className="form-group">
+                  <label>{t('settings.sankeyWidthMode')}</label>
+                  <select
+                    value={sankeyWidthMode}
+                    onChange={e => setSankeyWidthMode(e.target.value as 'value' | 'events')}
+                  >
+                    <option value="value">{t('settings.sankeyWidthMode.value')}</option>
+                    <option value="events">{t('settings.sankeyWidthMode.events')}</option>
+                  </select>
+                  <div className="hint">{t('settings.sankeyWidthModeHint')}</div>
+                </div>
               </div>
               )}
             </div>

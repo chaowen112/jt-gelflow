@@ -6,6 +6,23 @@
 
 ---
 
+## [1.5.3] — 2026-05-02
+
+桑基圖線寬計算方式可設定，配上一處 UI 微調與文件更新。
+
+### 新增
+
+- **設定面板新增「桑基圖設定」區塊**，可選擇「線寬計算方式」 — `value`（預設）或 `events`。後端對應新增 `Config.sankey_width_mode` 欄位。`value` 模式在沒有真實 byte 資料時會自然 fallback 到事件計數線寬（因為每筆流量都只貢獻 `value_default`，等於 1，導致每條 link 的 `value === events`）；`events` 模式則永遠用事件次數，即使有真實 byte 資料也是。桑基圖游標停留時 tooltip 對 `value === events` 的判斷在兩種模式下都會繼續省掉 byte 行。前端 App + SankeyCanvas 把這個模式傳下去，`buildSankeyData` 在 events 模式下把 `link.value` 替換成事件數。向前相容 — 舊的 `config.json` 沒這個 key 會用預設 `value`。
+- **README 與 README_zh-TW** 在「Configuration」段下加了「桑基圖線寬計算」子章節，解釋兩種模式、自動 fallback 行為、設定位置。
+
+### 變更
+
+- **設定面板 checkbox 樣式**。原本自訂的 14×14 box 配上 5×9 並貼齊左上的白勾，框內明顯有空隙。改成 18×18 box + 6×11 勾，置中於 (5, 1) — 視覺上勾滿到框、滑鼠也比較好點到。
+
+Co-Authored-By: Claude Opus 4.7 (1M context) <noreply@anthropic.com>
+
+---
+
 ## [1.5.2] — 2026-05-02
 
 文件打磨與一處 UI 標題修正。沒有實際程式邏輯變動，dist/ rebuild 是為了讓修正過的設定面板標題能到使用者眼前。

@@ -90,6 +90,11 @@ class Config:
         "country", "ext_ip", "ext_ip_ptr", "int_ip", "int_ip_ptr",
     ])
     sankey_window_seconds: int = 5  # Sankey snapshot cadence in seconds (1..30)
+    # Sankey link-width metric. 'value' (default): width = sum of value_field
+    # per flow — falls back to event count automatically when value_field is
+    # missing on every message (because value_default=1 → value === events).
+    # 'events': force width = event count regardless of any byte data.
+    sankey_width_mode: Literal["value", "events"] = "value"
     # Transition effect when switching between view modes. Applies to all 4
     # views uniformly. 'warp' = scanline + zoom warp; 'matrix' = green Matrix
     # character rain canvas overlay.

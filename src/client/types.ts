@@ -97,6 +97,7 @@ export interface Config {
   flow_ttl_seconds: number;
   default_view: ViewMode;
   sankey_active_columns?: SankeyColumn[];
+  sankey_width_mode?: 'value' | 'events';
   sankey_window_seconds?: number;
   transition_effect?: 'warp' | 'matrix';
   mapping: MappingConfig;

@@ -15,7 +15,7 @@ import { useWebSocket } from './useWebSocket';
 import { getStats, clearData, getConfig, updateConfig } from './api';
 import type { GraphData, ZoneGraphData, ZoneConfig, FlowData, NodeData, Config, ViewMode, GeoIPConfig, SankeyColumn } from './types';
 
-const VERSION = '1.5.2';
+const VERSION = '1.5.3';
 
 // Iconoir SVG icons (https://iconoir.com/) - embedded inline
 const SettingsIcon = () => (
@@ -808,6 +808,7 @@ function AppContent() {
                     int_ip_ptr: config?.mapping?.dst_ptr_field_display || '目的 IP 反解',
                   }}
                   windowSeconds={config?.sankey_window_seconds ?? 5}
+                  widthMode={config?.sankey_width_mode ?? 'value'}
                   srcPtrField={config?.mapping?.src_ptr_field || 'source_ip_ptr'}
                   dstPtrField={config?.mapping?.dst_ptr_field || 'destination_ip_ptr'}
                   srcCountryField={config?.mapping?.src_country_field || 'source_ip_country_code'}

@@ -6,6 +6,23 @@ All notable changes to this project will be documented in this file. The format 
 
 ---
 
+## [1.5.3] — 2026-05-02
+
+Sankey link-width semantics are now configurable, with a small UI tweak and docs to match.
+
+### Added
+
+- **Sankey Settings panel section** with `Link width metric` selector — `value` (default) or `events`. New `Config.sankey_width_mode` field on the server side. The `value` mode auto-falls-back to event-count widths when no real byte data is in play (because every flow's `value` contributes the `value_default` of 1, so per-link `value === events`); the `events` mode forces event counts even when byte data exists. The Sankey hover-tooltip's existing `value === events` heuristic continues to elide the bytes line in both cases. Frontend `App` + `SankeyCanvas` thread the mode through; `buildSankeyData` overrides `link.value` to events when mode is `events`. Forward-compatible — older `config.json` without the key defaults to `value`.
+- **README + README_zh-TW** gain a `Sankey width metric` subsection under Configuration explaining the two modes, the auto-fallback behaviour, and where to set it.
+
+### Changed
+
+- **Settings checkbox styling.** The custom checkbox glyph (the white tick on the cyan checked-state square) was 5×9 inside a 14×14 box, positioned at top-left, leaving an obvious gap around the tick. Box bumped to 18×18 with a 6×11 tick centred at (5, 1) — visually filled and easier to click.
+
+Co-Authored-By: Claude Opus 4.7 (1M context) <noreply@anthropic.com>
+
+---
+
 ## [1.5.2] — 2026-05-02
 
 Documentation polish and a small UI label correction. No code-path changes; the dist/ rebuild is so the corrected settings-panel title reaches users.

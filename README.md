@@ -1,4 +1,4 @@
-# JT-GELFLOW v1.5.2
+# JT-GELFLOW v1.5.3
 
 > **Language / 語言切換：** [English](README.md) | [繁體中文](README_zh-TW.md)
 
@@ -249,6 +249,19 @@ For the 2D Map / 3D Globe views, your GELF messages must carry `"lat,lng"` strin
 ```
 
 If you only have GeoIP for one side, set `internal_fallback_lat` / `_lng` (or enable `auto_detect_location`) to give internal IPs a default position.
+
+### Sankey width metric
+
+Each Sankey link's width is proportional to its `link.value`, where `link.value` is the per-flow sum of the GELF field configured under **Value Field** in settings (default `network_bytes`).
+
+| Setting | Effect on link width |
+|---|---|
+| `value` (default) | Width = sum of Value Field per flow. When the Value Field doesn't exist on incoming messages (e.g. Suricata IDS events have no byte length), every flow contributes `value_default` (default `1`), so width naturally degenerates to the event count. **You don't need to change anything for this case** — it's automatic. |
+| `events` | Width = event count per flow, regardless of any byte data. Pick this when you have real byte data but explicitly want widths to represent event count. |
+
+Tooltip behaviour is the same heuristic: when `link.value` happens to equal the event count (the no-byte-data case), the tooltip drops the `1.2 KB` line and shows `5 events` standalone; otherwise both show.
+
+Set via Settings → **Sankey Settings** → Link width metric.
 
 ---
 

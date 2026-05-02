@@ -17,6 +17,7 @@ interface Props {
   activeColumns: SankeyColumn[];   // User-toggled active columns
   columnHeaders?: SankeyColumns;   // User-configured header labels
   windowSeconds?: number;
+  widthMode?: 'value' | 'events';   // 'value' default; 'events' forces event-count widths
   // GELF field names for PTR + country lookup.
   srcPtrField?: string;
   dstPtrField?: string;
@@ -256,9 +257,15 @@ function flowColorKey(f: AggregatedFlow, columns: StageColumn[]): string {
 
 // Build d3-sankey nodes + links by chaining links between consecutive columns
 // in the active set. ext_ip + int_ip are guaranteed by resolveActiveColumns.
+// widthMode controls what the d3-sankey link.value (which drives link width)
+// resolves to: 'value' = sum of value_field per flow (typical: bytes); 'events'
+// = forced event count regardless of any byte data. The 'value' case naturally
+// degenerates to events when value_field is missing on every message
+// (value_default=1 → value === events) — no separate auto-detect needed.
 function buildSankeyData(
   flows: AggregatedFlow[],
   columns: StageColumn[],
+  widthMode: 'value' | 'events' = 'value',
 ): { nodes: SNode[]; links: SLink[] } {
   const nodeMap = new Map<string, number>();
   const nodes: SNode[] = [];
@@ -307,11 +314,12 @@ function buildSankeyData(
     if (m) {
       m.forEach((v, k) => { if (v > dominantV) { dominantV = v; dominantKey = k; } });
     }
+    const events = linkEventsAcc.get(key) || 0;
     links.push({
       source: parseInt(a, 10),
       target: parseInt(b, 10),
-      value,
-      events: linkEventsAcc.get(key) || 0,
+      value: widthMode === 'events' ? events : value,
+      events,
       colorKey: dominantKey,
     });
   });
@@ -373,6 +381,7 @@ export function SankeyCanvas({
   activeColumns,
   columnHeaders,
   windowSeconds = 5,
+  widthMode = 'value',
   srcPtrField = 'source_ip_ptr',
   dstPtrField = 'destination_ip_ptr',
   srcCountryField = 'source_ip_country_code',
@@ -464,7 +473,7 @@ export function SankeyCanvas({
     const filtered = agg.filter(a => allowedExt.has(a.extIp) && allowedInt.has(a.intIp));
     if (filtered.length === 0) { showEmpty(t('sankey.empty')); return; }
 
-    const built = buildSankeyData(filtered, resolvedColumns);
+    const built = buildSankeyData(filtered, resolvedColumns, widthMode);
     if (built.nodes.length === 0 || built.links.length === 0) {
       showEmpty(t('sankey.empty')); return;
     }
@@ -756,7 +765,7 @@ export function SankeyCanvas({
       .on('mouseenter', onNodeEnter)
       .on('mousemove', onNodeMove)
       .on('mouseleave', onNodeLeave);
-  }, [width, height, resolvedColumns.join(','), JSON.stringify(headers), topNInternal, topNExternal, srcPtrField, dstPtrField, srcCountryField, dstCountryField, t]);
+  }, [width, height, resolvedColumns.join(','), JSON.stringify(headers), topNInternal, topNExternal, srcPtrField, dstPtrField, srcCountryField, dstCountryField, widthMode, t]);
 
   // Snapshot loop: render immediately on mount/setting-change, then every
   // `windowSeconds` seconds. Clamp to safe bounds.
