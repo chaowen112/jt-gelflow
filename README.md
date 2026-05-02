@@ -1,4 +1,4 @@
-# JT-GELFLOW v1.5.1
+# JT-GELFLOW v1.5.2
 
 > **Language / 語言切換：** [English](README.md) | [繁體中文](README_zh-TW.md)
 

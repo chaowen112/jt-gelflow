@@ -6,6 +6,24 @@ All notable changes to this project will be documented in this file. The format 
 
 ---
 
+## [1.5.2] — 2026-05-02
+
+Documentation polish and a small UI label correction. No code-path changes; the dist/ rebuild is so the corrected settings-panel title reaches users.
+
+### Changed
+
+- **Settings section title** — `3D Globe / GeoIP Settings` → `2D Map / 3D Globe Settings` (zh-TW: `3D 地球 / GeoIP 設定` → `2D 地圖 / 3D 地球 設定`). The settings inside it (geolocation field names, internal fallback coordinate, map brightness, starfield, stats Top-N, focus-zoom) all already affected both views; the title was just inaccurate.
+
+### Documentation
+
+- **Field-mapping examples broadened.** Showing only canonical Graylog names (`network_bytes`, `protocol_name`, `source_ip_geolocation`, …) implied those were the strings JT-GELFLOW actually required. Both the README field-mapping table and the landing-page Mapping cards now list common alternatives — IPs (`src_ip` / `srcip` / `client_ip` / `suricata_srcip`), protocol (`proto` / `protocol` / `ip_proto` / `l4_proto`), value field (`bytes` / `length` / `datalen` / `octets`), GeoIP (`src_geolocation` / `srcip_geolocation` / `geoip_src_location`).
+- **"pipeline" wording clarified.** Replaced ambiguous "whichever your pipeline emits" with "whichever appears on incoming messages" so Graylog readers don't misread it as the Pipeline Rules feature. Added an "About field names" callout in the Graylog setup section explaining that field names visible at JT-GELFLOW reflect the cumulative result of Graylog's Input → Extractors → Pipeline Rules → GeoIP processor → Stream Routing chain.
+- **`curl` prerequisite hint** on the landing page is now a labelled distro/command table (Debian/Ubuntu, RHEL/Fedora/Rocky/Alma, Arch/Manjaro, openSUSE) instead of four commands separated by middle dots — readers couldn't tell which was theirs.
+- **Graylog → JT-GELFLOW setup walkthrough** added to README (EN + zh-TW) and surfaced as a callout on the landing page below the post-install summary. Covers System → Outputs → GELF Output, transport / host / port, stream attachment, plus tcpdump and Discovered Fields troubleshooting.
+- **Install-section text contrast** — `--text-dim` (#9ba8b8) was below comfortable reading contrast on the dark background; bumped to #b4c0cf, and switched the install prereq body + distro-label column to full `--text` since they're meant to be read carefully.
+
+---
+
 ## [1.5.1] — 2026-05-01
 
 Field-mapping flexibility plus a stack of operational fixes that surfaced when v1.5.0 was put on a customer box. Non-canonical GELF schemas (Suricata, vendor exports) now flow correctly through every view; install and upgrade are no longer susceptible to chicken-and-egg dependency gaps; the dashboard is operable before the first log lands.

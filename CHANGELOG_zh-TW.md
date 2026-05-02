@@ -6,6 +6,24 @@
 
 ---
 
+## [1.5.2] — 2026-05-02
+
+文件打磨與一處 UI 標題修正。沒有實際程式邏輯變動，dist/ rebuild 是為了讓修正過的設定面板標題能到使用者眼前。
+
+### 變更
+
+- **設定面板區塊標題**：`3D Globe / GeoIP Settings` → `2D Map / 3D Globe Settings`（中文：`3D 地球 / GeoIP 設定` → `2D 地圖 / 3D 地球 設定`）。裡面的所有設定（座標欄位名、內網 fallback 座標、地圖亮度、星空、stats Top-N、focus zoom）本來就同時影響 2D 跟 3D，標題寫成 3D 限定純粹是不準確。
+
+### 文件
+
+- **欄位對應範例擴充**。原本只列預設 Graylog 名稱（`network_bytes`、`protocol_name`、`source_ip_geolocation` …）容易讓讀者以為那些就是 JT-GELFLOW 唯一吃的字串。README 欄位對應表跟 landing page 的 Mapping 卡片都加了常見的替代命名 — IP（`src_ip` / `srcip` / `client_ip` / `suricata_srcip`）、Protocol（`proto` / `protocol` / `ip_proto` / `l4_proto`）、數值欄位（`bytes` / `length` / `datalen` / `octets`）、GeoIP（`src_geolocation` / `srcip_geolocation` / `geoip_src_location`）。
+- **「pipeline」用詞釐清**。把「whichever your pipeline emits / 看你的 pipeline 實際送什麼」改成「whichever appears on incoming messages / 看實際收到的訊息上是哪一個」，避免熟 Graylog 的讀者誤以為是 Pipeline Rules 那個特定功能。Graylog 設定章節加了一段「關於欄位名稱」說明，解釋 JT-GELFLOW 看到的欄位名是 Graylog 的 Input → Extractors → Pipeline Rules → GeoIP processor → Stream Routing 累積結果。
+- **landing page 的 `curl` 必要套件提示** 從原本一行 `·` 分隔的四個指令，改成兩欄表格（Debian/Ubuntu、RHEL/Fedora/Rocky/Alma、Arch/Manjaro、openSUSE 各自對應），讀者一眼看得出自己該用哪個。
+- **Graylog → JT-GELFLOW 設定步驟** 加進 README（中英）並在 landing page 安裝區塊下方做成 callout：包含 System → Outputs → GELF Output、transport / host / port、stream 掛接、tcpdump 跟「已探索欄位」兩個 troubleshooting 步驟。
+- **安裝區塊文字對比度**：`--text-dim`（#9ba8b8）在深色底下讀起來太淡，調亮成 #b4c0cf，安裝前置說明跟發行版欄則直接用 `--text` 全亮 — 這些是要讀的內容、不該是次要色。
+
+---
+
 ## [1.5.1] — 2026-05-01
 
 針對 v1.5.0 部署到客戶機後一連串浮現的問題集中修正：欄位對應的彈性大幅放寬（非標準 GELF schema 例如 Suricata 也能跑通）、安裝與升級流程修掉相依性 chicken-and-egg、儀表板在第一筆 log 進來之前也能正常操作。
