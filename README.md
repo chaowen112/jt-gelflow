@@ -7,7 +7,7 @@
 [![Node.js 18+](https://img.shields.io/badge/Node.js-18+-green.svg)](https://nodejs.org/)
 [![Platform: Linux](https://img.shields.io/badge/Platform-Linux-lightgrey.svg)](#requirements)
 
-> **Real-time GELF network traffic visualization — Flow / 2D Map / 3D Globe modes.**
+> **Real-time GELF network traffic visualization — Flow / 2D Map / 3D Globe / Sankey modes.**
 >
 > Self-hosted, single-machine, no cloud dependency. Apache 2.0.
 
@@ -111,7 +111,7 @@ If the player doesn't render, the same clip plays inline on the [project site](h
 - **Auto field discovery** — discovers GELF fields at runtime, caches with TTL, surfaces them in the settings panel for picking.
 - **Template engine** — flexible label templates: `{field}`, `{field|default}`, `{a||b||c|default}` fallback chains.
 - **Zone classification** — Internal / External / Inbound / Outbound by configurable CIDRs; optional custom zones.
-- **Top-N filtering** — per-view caps for internal and external nodes (Flow / 2D Map / 3D Globe each get their own scope).
+- **Top-N filtering** — per-view caps for internal and external nodes (Flow / 2D Map / 3D Globe / Sankey each get their own scope).
 - **Real-time search** — filter nodes and connections by IP, port, protocol, or label keyword (`-` excludes, multiple terms = AND).
 - **Statistics panel** — ranked by event count or traffic volume.
 - **WebSocket updates** — 100 ms broadcast loop; clients fall back to long-poll on disconnect.
